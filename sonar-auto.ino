@@ -90,6 +90,58 @@ void turnRight() {
   analogWrite(6, 128);
 }
 
+void turnRight90(int distanceCentimeters) {
+  // Turn right about 90 degrees
+  // using the sonar to help us track how far we've turned
+  turnRight();
+  // Turn sonar full left
+  // Assuming we measured the distance from straight-ahead
+  servo.write(180); 
+  delay(750);
+  brake();
+  
+  // Measure distance again and compare to previous distance
+  int distanceCentimeters2 = measureDistance();
+
+  // Assume we turned too far, and turn left a bit to compensate
+  if ((distanceCentimeters2 - distanceCentimeters) > 2) {
+    turnLeft();
+
+    // Turn more based on the distance we overshot
+    delay(20 * (distanceCentimeters2 - distanceCentimeters));
+    brake();
+  }
+
+  // Point sonar to front
+  servo.write(90);
+}
+
+void turnLeft90(int distanceCentimeters) {
+  // Turn right about 90 degrees
+  // using the sonar to help us track how far we've turned
+  turnLeft();
+  // Turn sonar full left
+  // Assuming we measured the distance from straight-ahead
+  servo.write(0); 
+  delay(750);
+  brake();
+  
+  // Measure distance again and compare to previous distance
+  int distanceCentimeters2 = measureDistance();
+
+  // Assume we turned too far, and turn left a bit to compensate
+  if ((distanceCentimeters2 - distanceCentimeters) > 2) {
+    turnRight();
+
+    // Turn more based on the distance we overshot
+    delay(20 * (distanceCentimeters2 - distanceCentimeters));
+    brake();
+  }
+
+  // Point sonar to front
+  servo.write(90);
+}
+
 void setup() {
   Serial.begin(9600);
   
@@ -121,27 +173,7 @@ void loop() {
   }
   brake();
 
-  // Turn right about 90 degrees
-  // using the sonar to help us track how far we've turned
-  turnRight();
-  // Turn sonar full left
-  // Assuming we measured the distance from straight-ahead
-  servo.write(180); 
-  delay(750);
-  brake();
-
-  // Measure distance again and compare to previous distance
-  int distanceCentimeters2 = measureDistance();
-
-  // Assume we turned too far, and turn left a bit to compensate
-  if ((distanceCentimeters2 - distanceCentimeters) > 2) {
-    turnLeft();
-
-    // Turn more based on the distance we overshot
-    delay(20 * (distanceCentimeters2 - distanceCentimeters));
-    brake();
-  }
-  
+  turnRight90(distanceCentimeters);
 
   // Stop forever
   while(true) {}
