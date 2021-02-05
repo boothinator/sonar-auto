@@ -108,16 +108,25 @@ void setup() {
 }
 
 void loop() {
+  int distanceCentimeters = measureDistance();;
 
-  // Drive forward until distance is less than 10cm
-  int distanceCentimeters = measureDistance();
-  Serial.println(distanceCentimeters);
+  // Drive forward until distance is less than 20cm
+  while(distanceCentimeters >= 20) {
 
-  if (distanceCentimeters < 10) {
-    brake();
-  } else {
     driveForward();
-  }
 
-  delay(50);
+    delay(50);
+    distanceCentimeters = measureDistance();
+  }
+  brake();
+
+  // Turn right about 90 degrees
+  turnRight();
+  delay(750);
+  brake();
+
+  
+
+  // Stop forever
+  while(true) {}
 }
